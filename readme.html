@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)http://twitter.github.com/bootstrap/examples/marketing-narrow.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>How speedy is SPDY?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-sortable.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      /* Custom container */
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 700px;
+      }
+      .container-narrow > hr {
+        margin: 10px 0;
+      }
+      .container-wide {
+        margin: 0 auto;
+        max-width: 900px;
+      }
+      .container-wide > hr {
+        margin: 10px 0;
+      }
+
+      /* Main marketing message and sign up button */
+      .jumbotron {
+        margin: 60px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 72px;
+        line-height: 1;
+      }
+      .jumbotron .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+
+      /* Supporting marketing content */
+      .marketing {
+        margin: 60px 0;
+      }
+      .marketing p + h4 {
+        margin-top: 28px;
+      }
+
+.bs-param {
+margin-left: 0;
+margin-right: 0;
+background-color: #fff;
+border-width: 1px;
+border-color: #ddd;
+border-style: solid;
+border-radius: 4px;
+position: relative;
+padding: 45px 15px 0;
+margin: 0 0 5px;
+}
+.bs-param:after {
+content: "Plot Trending Graphs";
+position: absolute;
+top: 15px;
+left: 15px;
+font-size: 12px;
+font-weight: 700;
+color: #bbb;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.control-group-1 {
+margin-bottom: 5px;
+}
+
+a {
+cursor: pointer;
+}
+select[disabled] {
+  background-color: #e5e5e5;
+  color: #e5e5e5;
+}
+    </style>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+    <div class="container-narrow">
+
+      <div class="masthead row-fluid">
+        <ul class="nav nav-pills pull-right">
+	  <li><a href="/spdy/">Home</a></li><li><a href="/spdy/data/">Data</a></li><li class='active'><a href="/spdy/tool/">Tool</a></li><li><a href="/spdy/publication/">Pubs</a></li><li><a href="/spdy/people/">People</a></li><li><a href="/spdy/related/">Related</a></li><li><a href="/">WProf</a></li>
+        </ul>
+	<h3 id="id_title" class="muted pull-right span7">How speedy is SPDY?</h3>
+	<img width="70px" src="/spdy/CSElogo2text_144.png">
+	<img width="70px" src="/spdy/logo_netlab.png">
+	<img width="80px" src="/spdy/logo_spdy.png">
+      </div>
+
+      <hr>
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h4>Epload</h4>
+	<p>We release our tool, <b>Epload</b> (short for <b>e</b>mulating <b>p</b>age <b>load</b>), that emulates the page load process for folks who are only interested in running network experiments while hoping to preserve authenticity of the page load process.
+	Epload is built on top of <a href="/">WProf</a>.
+	Compared to browsers, Epload provides the following benefits.</p>
+	<ul>
+	  <li>Epload performs deterministically in computation so as to save lots of repeated experiments.
+	  Without Epload, lots of repeated experiments are required to statistically reduce the impact of variability in computation.</li>
+	  <li>Epload made it easy to play with advanced SPDY mechanisms (prioritization and server push).</li>
+	</ul>
+	<p>Epload works as follows.
+	It first records the dependency graph of a Web page while loading the page using our <a href="http://wprof.cs.washington.edu/tool/">WProf</a> tool. Then, it converts the logs output from the WProf tool to the dependency graph in the JSON format. Next, Epload replays the dependency graph. It walks through the dependency graph from the first activity, that is loading the root HTML. When it encounters a network activity, it makes request to the corresponding URL; when it encounters a computation activity, it waits for the same amount of time that computation takes (informed by the dependency graph). Every time when it completes an activity, it checks whether it should trigger dependent activities based on whether all activities that a dependent activity depends on are finished. It keeps walking through the dependency graph this way until all activities in the dependency graph have been visited.
+	</p>
+	<p>Below, we focus on the replaying process of Epload. We provide hundreds of dependency graphs that we recorded (on a 2GHz Mac) to get started with. To record dependency graphs on your own, please refer to the <a href="http://wprof.cs.washington.edu/tool/">WProf</a> page and read the "Dependency graph" section below.
+	</p>
+	<hr>
+	<h5>Download</h5>
+	<p><a href="epload.tar.gz">Epload source code</a> (42.8KB; written based on <a href="http://nodejs.org/">node.js</a>).
+	Be sure to download and install node.js before running Epload.
+	Our code depends on a node.js module, <a href="https://github.com/indutny/node-spdy">SPDY</a>, which is a SPDY server.
+	Be sure to install it (<code>npm spdy</code>) before running Epload.</p>
+
+	<hr>
+	<h5>Usage</h5>
+	<p>
+	The Epload code is under <code>epload/emulator/</code>; the HTTP client is under <code>epload/client_http/</code>; and the SPDY client is under <code>epload/client_spdy/</code> which is implemented based on the SPDY/3 spec.
+	As an experimental tool, the SPDY client does not include the protocol negotiation phase.
+	To run the code, enter the Epload directory:
+	<pre>$ cd epload/emulator</pre>
+	Then, run the code
+	<pre>$ node run.js [protocol] [dependency graphs]</pre>
+	<code>[protocol]</code> is either <code>http</code> or <code>spdy</code>.
+	<code>[dependency graphs]</code> is the directory that stores the dependency graphs of Web page loads.
+	Epload will sequetially emulates Web page loads of which the dependency graphs are stored in this directory.
+	To test out Epload on your machine, type <code>node run.js http tests</code>.
+	If you are able to see messages like <code>===== [loaded the i-th page] timestamp</code>, it means that Epload works correctly.
+	</p>
+
+	<div class="alert">Note that running <code>node run.js spdy tests</code> won't work, since our test server only enables HTTP, not SPDY. It requires rewriting hosts (to ones on which SPDY is enabled) in *.json files to test SPDY.</div>
+
+	<p>Epload allows simple configurations to test out domain sharding, prioritization and server push strategies, and hypothetically varied computation.
+	This is done by configuring the <code>options</code> variable in file <code>run.js</code>.
+	</p>
+
+	<h6>Domain sharding</h6>
+	<p><code>domain_sharding_type</code> in the <code>options</code> variable configures the type of domain sharding to use.
+	</p>
+	<ul>
+	  <li><code>0</code> No domain sharding (a single TCP connection is used to fetch all the objects of a Web page).</li>
+	  <li><code>1</code> Domain sharding by full domain (one TCP connection per full domain).</li>
+	  <li><code>2</code> Domain sharding by top-level domain (one TCP connection per top-level domain).</li>
+	</ul>
+
+	<h6>Prioritization</h6>
+	<p><code>priority_type</code> in the <code>options</code> variable configures the type of prioritization strategies to use.</p>
+	<ul>
+	  <li><code>0</code> No prioritization.</li>
+	  <li><code>1</code> Chrome's prioritization strategy (HTML > JS, CSS > others).</li>
+	  <li><code>2</code> Our prioritization strategy (Prioritizing by depth in a dependency graph).
+	    When this prioritization strategy is used, the max and min of priority levels need to be configured.
+	    <code>priority_lmax</code> represents the highest priority (no less than zero); <code>priority_lmin</code> represents the lowest priority (no more than seven).
+	    <code>priority_lmax</code> should be no more than <code>priority_lmin</code>.
+	  </li>
+	</ul>
+
+	<h6>Server Push</h6>
+	<p><code>server_push_type</code> in the <code>options</code> variable configures the type of server push to use.</p>
+	<ul>
+	  <li><code>0</code> No server push.</li>
+	  <li><code>1</code> Push everything.</li>
+	  <li><code>2</code> Push by depth in a dependency graph (used by us).
+	    When this server push strategy is used, <code>server_push_depth</code> that represents the depth to push needs to be configured.
+	    We find that pushing depth 1 is good in balancing latency and pushed bytes.
+	  </li>
+	  <li><code>3</code> Push by embedding level (used in mod_spdy).</li>
+	</ul>
+
+	<h6>Varying Computation</h6>
+	<p><code>alpha</code> and <code>beta</code> in the <code>options</code> variable configure the length of each computation activity relative to the captured length.
+	A computation activity (e.g., evaluating a JavaScript) will take <code>alpha</code> * original_time + <code>beta</code> amount of time where original_time is the captured time that this activity spent.
+	<code>alpha : 0.5</code>, for example, means that CPU speed is doubled.</p>
+
+	<hr>
+	<h5>Dependency graph</h5>
+	<p>To get started with Epload, we provide a few dependency graphs that we recorded.
+	Below, we show steps to set up the dependency graphs and experiments.
+	</p>
+
+	<ol>
+	  <li>Have a client and a Web server at hands.</li>
+	  <li>Download <a href="server.tar.gz">Web objects</a> (277MB) to the Web server.</li>
+	  <li>Download the <a href="dependency_graphs.tar.gz">dependency graphs</a> (787KB) that will be used to load the Web objects and put them in a directory on the client.</li>
+	  <li>Rewrite URLs (<code>host</code> and <code>path</code>) in the dependency graphs and point them to the path that serves Web objects on the server.
+	    <code>host</code> and <code>path</code> are fields of each child of the <code>"objs"</code> field in the dependency graphs.
+	  </li>
+	  <li>Run Epload with HTTP to check whether rewrites are done correctly. For example, <code>node run.js http path_to_graphs/58.com_/</code> and look for messages like <code>===== [loaded the i-th page] timestamp</code></li>
+	  <li>Install a SPDY server on the Web server. We recommend to use <a href="https://code.google.com/p/mod-spdy/">mod_spdy</a>.
+	    If mod_spdy is used, be sure to enable no-ssl SPDY by adding <code>SpdyDebugUseSpdyForNonSslConnections 3</code> to the <code>spdy.conf</code> file under Apache's mods-available directory.
+	    If other SPDY server is used, be sure to configure accordingly to use no-ssl SPDY and SPDY/3.
+	  </li>
+	  <li>Run Epload with SPDY to check whether SPDY is properly set up. For example, <code>node run.js spdy path_to_graphs/58.com_/</code> and look for messages like <code>===== [loaded the i-th page] timestamp</code></li>
+	  <li>To measure page load times, either look for <code>=== [page load time] timestamp</code> (in milliseconds) messages, or time the run of Epload when initiating Epload using another script.
+	  </li>
+	</ol>
+
+	<h6>Example</h6>
+	<p>Here, we show an example of the dependency graph.
+	  In this graph, we have two Web objects with ids <code>r1</code> and <code>r2</code> where <code>r1</code> is the root HTML while <code>r2</code> is a JavaScript.
+	  Web object <code>r2</code> is triggered 200 milliseconds after HTML parsing started, and therefore we say that loading <code>r2</code> depends on parsing <code>r1</code>.
+	</p>
+	<pre><small>{
+  "objs": [
+    {
+      "id": "r1",
+      "host": "wprof.cs.washington.edu",
+      "path": "/spdy/tool/tests/obj_100K-1.js",
+      "when_comp_start": 1,
+      "download": {
+        "id": "r1_d",
+        "type": "download"
+      },
+      "comps": [
+        {
+          "id": "r1_c1",
+          "type": "evalhtml",
+          "time": 500
+        }
+      ]
+    },
+    {
+      "id": "r2",
+      "host": "wprof.cs.washington.edu",
+      "path": "/spdy/tool/tests/obj_10K-1.js",
+      "when_comp_start": -1,
+      "download": {
+        "id": "r2_d",
+        "type": "download"
+      },
+      "comps": [
+        {
+          "id": "r2_c1",
+          "type": "evaljs",
+          "time": 1000
+        }
+      ]
+    }
+  ],
+  "deps": [
+    {
+      "id": "dep1",
+      "a1": "r1_c1",
+      "a2": "r2_d",
+      "time": 200
+    }
+  ],
+  "start_activity": "r1_d"
+}</small></pre>
+
+	<h6>JSON fields</h6>
+	<p>
+	  Let's go through the fields in the json file that represents a dependency graph.
+	</p>
+	<ul>
+	  <li><code>objs</code> Array of Web objects. Each element in the array has the following fields.
+	    <ul>
+		<li><code>id</code> Id of this Web object.</li>
+		<li><code>host</code> Domain of the Web server that hosts this Web object.</li>
+		<li><code>path</code> Path on the Web server that this Web object is served.</li>
+		<li><code>when_comp_start</code> Indicates when computation starts relative to when this Web object is loaded.
+		  <code>when_comp_start : 1</code> means that the first computation activity starts after <i>the first chunk</i> of the object is loaded.
+		  <code>when_comp_start : -1</code> means that the first computation activity starts after <i>the whole</i> object is loaded.
+		</li>
+		<li><code>download</code> Object of the download activity of the Web object.
+		  <ul>
+		    <li><code>id</code> Id of the download activity.</li>
+		    <li><code>type</code> Type of the download activity. It is always <code>download</code> here.</li>
+		  </ul>
+		</li>
+		<li><code>comps</code> Array of computation activities of the Web object. Each element in the array has the following fields.
+		  <ul>
+		    <li><code>id</code> Id of the computation activity.</li>
+		    <li><code>type</code> Type of the computation activity. It represents one of parsing HTML, evaluating JavaScript or CSS.</li>
+		    <li><code>Time</code> Time in milliseconds that the computation activity takes.</li>
+		  </ul>
+		</li>
+	    </ul>
+	  </li>
+	  <li><code>deps</code> Array of dependencies between pairs of Web objects. Each element in the array has the following fields.
+	    <ul>
+		<li><code>id</code> Id of the dependency. Activity <code>a2</code> depends on activity <code>a1</code>.</li>
+		<li><code>a1</code> Id of the depended activity.</li>
+		<li><code>a2</code> Id of the dependent activity.</li>
+		<li><code>time</code> Indicates when <code>a2</code> can be triggered.
+		  <code>time : -1</code> means that <code>a2</code> cannot start until <code>a1</code> is completed;
+		  otherwise it means that <code>a2</code> cannot start until <code>time</code> milliseconds after <code>a1</code> started.
+		</li>
+	    </ul>
+	  </li>
+	  <li><code>start_activity</code> The id of first activity to start with (i.e., downloading the root HTML).</li>
+	</ul>
+
+	<h6>Generating dependency graphs from WProf</h6>
+	<p>Dependency graphs can also be generated from our WProf tool.
+	  First, follow the instructions on the <a href="http://wprof.cs.washington.edu/tool/">WProf</a> page and make sure your Chromium can output WProf logs.
+	  Second, <a href="mailto:wangxiao@cs.washington.edu">send us an email</a> asking for the analysis code to generate dependency graphs from the WProf logs.
+	  The analysis code is beta and we will release it in the future.
+	</p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="footer">
+        <a target="_blank" href="https://netlab.cs.washington.edu/blog/">uw networks</a> |
+        <a target="_blank" href="http://cs.washington.edu/">uw cse</a>
+	<p class="muted">© Copyright 2014 by Xiao Sophia Wang, University of Washington. Powered by Twitter Bootstrap.<p>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap-transition.js"></script>
+    <script src="/js/bootstrap-alert.js"></script>
+    <script src="/js/bootstrap-modal.js"></script>
+    <script src="/js/bootstrap-dropdown.js"></script>
+    <script src="/js/bootstrap-scrollspy.js"></script>
+    <script src="/js/bootstrap-tab.js"></script>
+    <script src="/js/bootstrap-tooltip.js"></script>
+    <script src="/js/bootstrap-popover.js"></script>
+    <script src="/js/bootstrap-button.js"></script>
+    <script src="/js/bootstrap-collapse.js"></script>
+    <script src="/js/bootstrap-carousel.js"></script>
+    <script src="/js/bootstrap-typeahead.js"></script>
+
+</body></html>

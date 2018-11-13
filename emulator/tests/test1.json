@@ -1,0 +1,50 @@
+{
+  "name": "test1",
+  "description": "one object depends on another",
+  "objs": [
+    {
+      "id": "r1",
+      "host": "wprof.cs.washington.edu",
+      "path": "/spdy/tool/tests/obj_100K-1.js",
+      "when_comp_start": 1,
+      "download": {
+        "id": "r1_d",
+        "type": "download"
+      },
+      "comps": [
+        {
+          "id": "r1_c1",
+          "type": "evalhtml",
+          "time": 500
+        }
+      ]
+    },
+    {
+      "id": "r2",
+      "host": "wprof.cs.washington.edu",
+      "path": "/spdy/tool/tests/obj_10K-1.js",
+      "when_comp_start": -1,
+      "download": {
+        "id": "r2_d",
+        "type": "download"
+      },
+      "comps": [
+        {
+          "id": "r2_c1",
+          "type": "evaljs",
+          "time": 1000
+        }
+      ]
+    }
+  ],
+  "deps": [
+    {
+      "id": "dep1",
+      "a1": "r1_c1",
+      "a2": "r2_d",
+      "time": 200
+    }
+  ],
+  "start_activity": "r1_d",
+  "load_activity": "r2_c1"
+}
