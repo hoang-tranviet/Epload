@@ -64,7 +64,8 @@ Activity.prototype.start = function start() {
     var obj = self.em.objs[act.obj_id];
     var callback_data = (obj.when_comp_start > 0) ? self.onComplete : null;
     var opts = {
-      host: obj.host,
+      //host: obj.host,
+      host: "10.1.1.1",
       path: obj.path,
       url: obj.url,
       activity: self,
