@@ -68,8 +68,6 @@ var child = exec('ls ' + directory,
     var i = -1;
 
     var callback_finish = function(plt) {
-      if (i >= 0)
-        console.log("===== [loaded the " + i + "-th page]", plt, "\n=========================================\n");
 
       var file = null;
       while (!file) {

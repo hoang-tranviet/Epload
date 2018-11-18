@@ -57,7 +57,7 @@ Activity.prototype.start = function start() {
   // Get start timestamp
   var diff = process.hrtime(self.em.hr_base);
   self.em.acts[id].ts_s = diff[0] * 1000 + diff[1] / 1000000;
-  console.log("=== [start][" + self.em.acts[id].ts_s + "]", id);
+  // console.log("=== [start][" + self.em.acts[id].ts_s + "]", id);
 
   if (act.type == "download") {
     // For "download" activity
@@ -74,7 +74,7 @@ Activity.prototype.start = function start() {
       priority: self._getPriority(self.em.options.priority_type),
       domain_sharding_type: self.em.options.domain_sharding_type,
     };
-    console.log("----- [priority]", opts.priority, act.id);
+    // console.log("----- [priority]", opts.priority, act.id);
     self.em.client.request(opts, callback_data, self.onComplete);
   } else {
     // For "comp" activity
@@ -140,7 +140,7 @@ Activity.prototype.onComplete = function onComplete(is_partial) {
   delete act.deps;
   delete act.time;
   delete act.obj_id;
-  console.log("=== [onComplete][" + self.em.acts[id].ts_e + "]", JSON.stringify(act));
+  //console.log("=== [onComplete][" + self.em.acts[id].ts_e + "]", JSON.stringify(act));
 
   if (!self.em.map_complete[id]) {
     self.em.map_complete[id] = 1;

@@ -150,8 +150,8 @@ function Emulator(json, options) {
     fs.writeFileSync(filename, out);
   }
 
-  console.log("=== [web objects]", this.objs);
-  console.log("=== [activities]", this.acts);
+//  console.log("=== [web objects]", this.objs);
+//  console.log("=== [activities]", this.acts);
 }
 util.inherits(Emulator, process.EventEmitter);
 
@@ -283,7 +283,7 @@ Emulator.prototype._setTimeout = function setTimeout(callback, timeout) {
   var self = this;
 
   var diff = process.hrtime(self.hr_base);
-  console.log("_setTimeout start:", diff[0] * 1000 + diff[1] / 1000000);
+  //console.log("_setTimeout start:", diff[0] * 1000 + diff[1] / 1000000);
 
   // Set timer
   var child = exec('perl timeout.pl ' + timeout,
@@ -292,7 +292,7 @@ Emulator.prototype._setTimeout = function setTimeout(callback, timeout) {
         return;
 
   var diff = process.hrtime(self.hr_base);
-  console.log("_setTimeout finish:", diff[0] * 1000 + diff[1] / 1000000);
+  //console.log("_setTimeout finish:", diff[0] * 1000 + diff[1] / 1000000);
 
       // Call
       if (callback != null)

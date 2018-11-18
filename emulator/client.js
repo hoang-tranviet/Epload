@@ -141,7 +141,7 @@ Client.prototype.request_http = function request_http(o, callback_data, callback
   if (this.https) {
     https.request(options, callback).end();
   } else {
-  console.log("options ", options);
+    //console.log("options ", options);
     http.request(options, callback).end();
   }
 }
@@ -187,7 +187,7 @@ Client.prototype._init_http = function init_http() {
   this.res_count = 0;
   this.log = false;
   this.https = this.options.https;
-  console.log("using https: ", this.https);
+  // console.log("using https: ", this.https);
   if (this.https) {
     this.port = 443;
     this.agent = https.globalAgent;
