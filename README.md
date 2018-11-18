@@ -77,6 +77,16 @@ prioritization and server push strategies, and hypothetically varied
 computation. This is done by configuring the `options` variable in file
 `run.js`.
 
+To enable or disable HTTPS: open emulator/emulator.js, change the structure
+client\_options from:
+
+    https: false
+
+to:
+
+    https: true
+
+
 ###### Domain sharding
 
 `domain_sharding_type` in the `options` variable configures the type of
