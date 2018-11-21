@@ -168,7 +168,15 @@ experiments.
 8.  To measure page load times, either look for `=== [page load time]
     timestamp` (in milliseconds) messages, or time the run of Epload
     when initiating Epload using another script.
-    
+
+Notes on graph samples:
+
+1. www.redtube.com: triggers SYN flooding defense in Linux TCP -> enable SYN cookie
+2. www.globo.com: too slow (~80s)
+3. www.aliexpress.com: cause tc-htb to start dropping pkts with IW=20
+ Worse, the drop problem of tc-htb resists for other tests, even with
+ /sys/module/sch\_htb/parameters/htb\_hysteresis = 0
+
 ###### JSON fields
 
 Let's go through the fields in the json file that represents a
